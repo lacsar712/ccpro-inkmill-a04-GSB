@@ -13,3 +13,5 @@ Thumbs.db
 frontend/.svelte-kit/
 frontend/dist/
 backend/vendor/
+__pycache__/
+*.pyc

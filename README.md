@@ -1,7 +1,7 @@
 # InkMill-01 · 油墨研磨台账
 
-面向印刷油墨研磨车间的**研磨机状态、粘度取样与研磨遍次**台账系统。  
-**不是**库存、电商或 CMS 场景。
+面向印刷油墨研磨车间的**研磨机状态、粘度取样、研磨遍次与研磨珠耗材领用**台账系统。  
+**不是**通用进销存、电商或 CMS 场景——耗材模块只做「按车间的研磨珠结存 + 发料扣减」，不做采购入库/供应商/多仓库。
 
 ## 技术栈
 
@@ -34,7 +34,10 @@ MySQL 连接：`inkmill` / `inkmill` / `inkmill`（库名/用户/密码）
 2. **Mill**：`workshopId`, `millCode`（同车间唯一）, `pigmentBase`, `bowlLiters`, `status`（`grinding` \| `idle` \| `wash`）
 3. **ViscositySample**：`millId`, `sampledAt`, `viscosityPaS`（须 &gt; 0，否则 HTTP 400）, `tempC`, `notes`
 4. **GrindPass**：`millId`, `startedAt`, `passNo`（≥ 1）, `durationMin`（&gt; 0）, `mediaType`, `operatorName`
-5. **Dashboard**：`workshopTotal`, `grindingMillCount`, `samplesLast24h`, `passesLast7d`
+5. **MediaStock**（研磨珠库存）：`workshopId`, `mediaType`, `onHandKg`（非负，DB CHECK 约束）；同一车间 + `mediaType` 库存行唯一
+6. **MediaIssue**（发料/领用）：`workshopId`, `millId`（可空；填写时该机台必须属于同一车间）, `mediaType`, `qtyKg`（&gt; 0）, `issuedAt`, `operatorName`
+   - 发料在事务内 `SELECT ... FOR UPDATE` 锁定库存行后扣减，**库存不足返回 HTTP 409（中文提示）**，无库存行视同结存 0，同样 409，绝不产生负库存
+7. **Dashboard**：`workshopTotal`, `grindingMillCount`, `samplesLast24h`, `passesLast7d`
 
 ## 快速启动（Docker）
 

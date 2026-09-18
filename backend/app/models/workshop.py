@@ -18,3 +18,9 @@ class Workshop(Base):
     )
 
     mills: Mapped[list["Mill"]] = relationship("Mill", back_populates="workshop")
+    media_stocks: Mapped[list["MediaStock"]] = relationship(
+        "MediaStock", back_populates="workshop"
+    )
+    media_issues: Mapped[list["MediaIssue"]] = relationship(
+        "MediaIssue", back_populates="workshop"
+    )

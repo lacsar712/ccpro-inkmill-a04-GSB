@@ -44,6 +44,23 @@ export interface GrindPass {
   operatorName: string;
 }
 
+export interface MediaStock {
+  id: number;
+  workshopId: number;
+  mediaType: string;
+  onHandKg: number;
+}
+
+export interface MediaIssue {
+  id: number;
+  workshopId: number;
+  millId: number | null;
+  mediaType: string;
+  qtyKg: number;
+  issuedAt: string;
+  operatorName: string;
+}
+
 export interface DashboardStats {
   workshopTotal: number;
   grindingMillCount: number;

@@ -1,6 +1,8 @@
 from decimal import Decimal
 
 from app.models.grind_pass import GrindPass
+from app.models.media_issue import MediaIssue
+from app.models.media_stock import MediaStock
 from app.models.mill import Mill
 from app.models.user import User
 from app.models.viscosity_sample import ViscositySample
@@ -62,5 +64,26 @@ def grind_pass_json(row: GrindPass) -> dict:
         "passNo": row.pass_no,
         "durationMin": _num(row.duration_min) or 0,
         "mediaType": row.media_type,
+        "operatorName": row.operator_name,
+    }
+
+
+def media_stock_json(row: MediaStock) -> dict:
+    return {
+        "id": row.id,
+        "workshopId": row.workshop_id,
+        "mediaType": row.media_type,
+        "onHandKg": _num(row.on_hand_kg) or 0,
+    }
+
+
+def media_issue_json(row: MediaIssue) -> dict:
+    return {
+        "id": row.id,
+        "workshopId": row.workshop_id,
+        "millId": row.mill_id,
+        "mediaType": row.media_type,
+        "qtyKg": _num(row.qty_kg) or 0,
+        "issuedAt": dt_to_json(row.issued_at),
         "operatorName": row.operator_name,
     }
