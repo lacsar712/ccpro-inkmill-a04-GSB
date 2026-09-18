@@ -50,3 +50,20 @@ export interface DashboardStats {
   samplesLast24h: number;
   passesLast7d: number;
 }
+
+export interface MediaStock {
+  id: number;
+  workshopId: number;
+  mediaType: string;
+  onHandKg: number;
+}
+
+export interface MediaIssue {
+  id: number;
+  workshopId: number;
+  millId: number | null;
+  mediaType: string;
+  qtyKg: number;
+  issuedAt: string;
+  operatorName: string;
+}

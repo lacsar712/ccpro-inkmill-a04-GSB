@@ -4,6 +4,8 @@ from decimal import Decimal
 from app.auth import hash_password
 from app.database import SessionLocal
 from app.models.grind_pass import GrindPass
+from app.models.media_issue import MediaIssue
+from app.models.media_stock import MediaStock
 from app.models.mill import Mill
 from app.models.user import User
 from app.models.viscosity_sample import ViscositySample
@@ -104,6 +106,48 @@ def seed() -> None:
                         pass_no=1,
                         duration_min=Decimal("60.00"),
                         media_type="1.0mm 玻璃珠",
+                        operator_name="李工",
+                    ),
+                ]
+            )
+
+            # 研磨珠库存行（同车间同介质唯一）与历史发料流水。
+            # 结余均为非负，且不小于对应历史发料数量。
+            db.add_all(
+                [
+                    MediaStock(
+                        workshop_id=w1.id,
+                        media_type="0.8mm 锆珠",
+                        on_hand_kg=Decimal("80.00"),
+                    ),
+                    MediaStock(
+                        workshop_id=w1.id,
+                        media_type="1.0mm 玻璃珠",
+                        on_hand_kg=Decimal("45.00"),
+                    ),
+                    MediaStock(
+                        workshop_id=w2.id,
+                        media_type="0.6mm 钇稳定锆珠",
+                        on_hand_kg=Decimal("30.00"),
+                    ),
+                ]
+            )
+            db.add_all(
+                [
+                    MediaIssue(
+                        workshop_id=w1.id,
+                        mill_id=m1.id,
+                        media_type="0.8mm 锆珠",
+                        qty_kg=Decimal("20.00"),
+                        issued_at=now - timedelta(hours=4),
+                        operator_name="张研磨",
+                    ),
+                    MediaIssue(
+                        workshop_id=w1.id,
+                        mill_id=m2.id,
+                        media_type="1.0mm 玻璃珠",
+                        qty_kg=Decimal("5.00"),
+                        issued_at=now - timedelta(days=2),
                         operator_name="李工",
                     ),
                 ]
